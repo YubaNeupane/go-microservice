@@ -78,7 +78,10 @@ k8s_yaml('./infra/development/k8s/trip-service-deployment.yaml')
 k8s_resource('trip-service', resource_deps=['trip-service-compile'], labels="services")
 
 ### End of Trip Service ###
-### Web Frontend ###
+
+#######################################################
+#################### Web Frontend #####################
+#######################################################
 
 docker_build(
   'ride-sharing/web',

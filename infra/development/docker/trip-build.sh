@@ -9,4 +9,4 @@ export GOARCH=amd64
 go build -o build/trip-service ./services/trip-service/cmd/main.go
 
 # Print a success message
-echo "API-GATEWAY :: Build COMPLETED!"
+echo "TRIP-SERVICE :: Build COMPLETED!"
