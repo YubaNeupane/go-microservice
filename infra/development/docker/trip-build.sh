@@ -6,7 +6,7 @@ export GOOS=linux
 export GOARCH=amd64
 
 # Build the Go binary
-go build -o build/api-gateway ./services/api-gateway
+go build -o build/trip-service ./services/trip-service/cmd/main.go
 
 # Print a success message
 echo "API-GATEWAY :: Build COMPLETED!"
