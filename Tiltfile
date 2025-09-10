@@ -9,11 +9,14 @@ load('ext://restart_process', 'docker_build_with_restart')
 k8s_yaml('./infra/development/k8s/app-config.yaml')
 
 ### End of K8s Config ###
-### API Gateway ###
+
+#######################################################
+##################### API Gateway #####################
+#######################################################
 
 gateway_compile_cmd = 'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/api-gateway ./services/api-gateway'
 if os.name == 'nt':
-  gateway_compile_cmd = './infra/development/docker/api-gateway-build.bat'
+  gateway_compile_cmd = 'bash ./infra/development/docker/api-gateway-build.sh'
 
 local_resource(
   'api-gateway-compile',
@@ -40,7 +43,10 @@ k8s_yaml('./infra/development/k8s/api-gateway-deployment.yaml')
 k8s_resource('api-gateway', port_forwards=8081,
              resource_deps=['api-gateway-compile'], labels="services")
 ### End of API Gateway ###
-### Trip Service ###
+
+#######################################################
+#################### Trip Service #####################
+#######################################################
 
 # Uncomment once we have a trip service
 
