@@ -22,11 +22,6 @@ func main() {
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.AllowContentType("application/json"))
 
-	// 	 PREVIEW_TRIP = "/trip/preview",
-	//   START_TRIP = "/trip/start",
-	//   WS_DRIVERS = "/drivers",
-	//   WS_RIDERS = "/riders",
-
 	mux.Route("/trip", func(r chi.Router) {
 		r.Post("/preview", handleTripPreview)
 		r.Post("/start", handleTripStart)

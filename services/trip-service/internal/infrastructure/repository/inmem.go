@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"ride-sharing/services/trip-service/internal/domain"
 )
 
@@ -20,7 +19,6 @@ func NewInmemRepository() *inmemRepository {
 
 func (r *inmemRepository) CreateTrip(ctx context.Context, trip *domain.TripModel) (*domain.TripModel, error) {
 	r.trips[trip.ID.Hex()] = trip
-	fmt.Printf("Trip created: %+v\n", trip)
 
 	return trip, nil
 }
