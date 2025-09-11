@@ -27,7 +27,6 @@ func main() {
 	mux := chi.NewRouter()
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Recoverer)
-	mux.Use(middleware.AllowContentType("application/json"))
 	inmemRepo := repository.NewInmemRepository()
 
 	httpHandler := &h.HttpHandler{
