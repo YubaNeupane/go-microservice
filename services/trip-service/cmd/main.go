@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	h "ride-sharing/services/trip-service/internal/infrastructure/http"
 	"ride-sharing/services/trip-service/internal/infrastructure/repository"
 	"ride-sharing/services/trip-service/internal/service"
 	"ride-sharing/shared/env"
+	"syscall"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -38,8 +43,29 @@ func main() {
 		Handler: mux,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	serverErrors := make(chan error, 1)
+
+	go func() {
+		log.Printf("Server Listening on %s", httpAddr)
+		serverErrors <- server.ListenAndServe()
+	}()
+
+	shutdown := make(chan os.Signal, 1)
+
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case err := <-serverErrors:
+		log.Printf("Error starting the server: %v", err)
+	case sig := <-shutdown:
+		log.Printf("Server is shutting down due to %v signal", sig)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if err := server.Shutdown(ctx); err != nil {
+			log.Printf("Could not stop server gracefully: %v", err)
+			server.Close()
+		}
 	}
 
 }
