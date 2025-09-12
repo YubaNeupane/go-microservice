@@ -53,3 +53,7 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, previewTripRequest *pb.Pr
 	}, nil
 
 }
+
+func (h *gRPCHandler) StartTrip(ctx context.Context, createTripRequest *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartTrip not implemented")
+}

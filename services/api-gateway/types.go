@@ -25,3 +25,16 @@ func (p *previewTripRequest) ToProto() *pb.PreviewTripRequest {
 		},
 	}
 }
+
+type startNewTripRequest struct {
+	RideFareID string `json:"rideFareID"`
+	UserID     string `json:"userID"`
+}
+
+func (c *startNewTripRequest) ToProto() *pb.CreateTripRequest {
+	return &pb.CreateTripRequest{
+		RideFareID: c.RideFareID,
+		UserID:     c.UserID,
+	}
+
+}
