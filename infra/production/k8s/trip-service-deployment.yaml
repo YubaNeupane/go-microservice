@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: trip-service
-          image: europe-west1-docker.pkg.dev/{{PROJECT_ID}}/ride-sharing/trip-service
+          image: us-east4-docker.pkg.dev/ride-sharing-471920/ride-sharing/trip-service
           ports:
             - containerPort: 8083
           resources:
