@@ -41,26 +41,44 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, previewTripRequest *pb.Pr
 		Longitude: destination.Longitude,
 	}
 
-	t, err := h.service.GetRoute(ctx, pickUpCoord, destinationCoord)
+	route, err := h.service.GetRoute(ctx, pickUpCoord, destinationCoord)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Errorf(codes.Internal, "Failed to get route: %v", err)
 	}
 
-	estimatedFares := h.service.EstimatePackagesPriceWithRoute(t)
-	fares, err := h.service.GenerateTripFares(ctx, estimatedFares, previewTripRequest.UserID)
+	estimatedFares := h.service.EstimatePackagesPriceWithRoute(route)
+	fares, err := h.service.GenerateTripFares(ctx, estimatedFares, previewTripRequest.UserID, route)
 	if err != nil {
 		log.Println(err)
 		return nil, status.Errorf(codes.Internal, "Failed to generate ride fares: %v", err)
 	}
 
 	return &pb.PreviewTripResponse{
-		Route:     t.ToProto(),
+		Route:     route.ToProto(),
 		RideFares: domain.ToRideFareProto(fares),
 	}, nil
 
 }
 
-func (h *gRPCHandler) StartTrip(ctx context.Context, createTripRequest *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartTrip not implemented")
+func (h *gRPCHandler) CreateTrip(ctx context.Context, createTripRequest *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
+
+	fare, err := h.service.GetAndValidateFare(ctx, createTripRequest.RideFareID, createTripRequest.UserID)
+	if err != nil {
+		log.Println(err)
+		return nil, status.Errorf(codes.Internal, "Failed to GetAndValidateFare: %v", err)
+	}
+
+	trip, err := h.service.CreateTrip(ctx, fare)
+	if err != nil {
+		log.Println(err)
+		return nil, status.Errorf(codes.Internal, "Failed to CreateTrip: %v", err)
+	}
+
+	//Publish to event on async common module
+
+	return &pb.CreateTripResponse{
+		TripID: trip.ID.Hex(),
+	}, nil
+
 }

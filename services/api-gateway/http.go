@@ -110,7 +110,7 @@ func handleTripStart(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tripService.Close()
 
-	previewTripResp, err := tripService.Client.StartTrip(r.Context(), reqBody.ToProto())
+	previewTripResp, err := tripService.Client.CreateTrip(r.Context(), reqBody.ToProto())
 	if err != nil {
 		log.Printf("Failed to start a trip %v", err)
 		response := &contracts.APIResponse{
